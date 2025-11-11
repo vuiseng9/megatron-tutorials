@@ -8,14 +8,14 @@ How and what should we set?
 Which axis of parallelism should we scale first?
 Why am I getting out-of-memory (OOM) all the time? Okay, it’s finally running… but is it even correct? is the performance as expected?*
 
-This tutorial series is written to address those pain points. It provides a set of curated, ready-to-run (hack) experiments designed to reduce the friction of getting started with Megatron-LM. Each tutorial explains the core concept succinctly, isolates and ablates one parallelism strategy at a time, and, wherever possible, aligns with the main paper to reproduce empirical scaling trends reported to verify both correctness and understanding.
+This tutorial series is written to address those pain points. It provides a set of curated, ready-to-run (hack) experiments designed to reduce the friction of getting started with Megatron-LM. Each tutorial explains the core concept succinctly, ablates one parallelism strategy at a time, and, wherever possible, we align with the main paper to reproduce the reported empirical scaling trends to verify correctness and understanding.
 
-All experiments are designed to run on a single node with 8×H100 80 GB GPUs. Performance and memory metrics are meticulously tabulated for your own cross-reference and verification.The goal is to make Megatron-LM more accessible, reproducible, and tinker-friendly.
+All experiments are designed to run on a single node with 8×H100 80 GB GPUs. Performance and memory metrics are meticulously tabulated for your own cross-reference and verification. The ***goal*** is to *make Megatron-LM more accessible, reproducible, and tinker-friendly*. Let's get started!
 
 Explore:
 
 * [Data Parallelism & ZeRO-2](./01-dp-zero2.md): Scaling Up Batch and Model Size with Sublinear Memory Growth.
-* [Tensor Parallelism](./02-tp-sp.md): Intra-layer Parameter Sharding for Larger Models, per Paper’s Strong and Weak Scaling.
+* [Tensor Parallelism](./02-tp-sp.md): Intra-layer Parameter Sharding for Larger Models, per paper's Strong and Weak Scaling.
 * [Sequence Parallelism](./02-tp-sp.md#sequence-parallelism): Turns Activation Duplication into Partitions, Bypassing Recomputation.
 * [Context Parallelism](./03-cp.md): Extending Sequence Parallelism to Attention and Variants in Megatron.
 * [(Virtual) Pipeline Parallelism](./04-pp-vpp.md): Inter-layer Model Sharding, Scheduling, and Layer Interleaving for Reduced Bubbles.
@@ -34,14 +34,14 @@ docker run -d --gpus all -it --rm \
   --ulimit memlock=-1 --ulimit stack=67108864 \
   vuiseng9/megatron-tutorials
 ```
-Or build using `docker/Dockerfile`.
+Or build using [docker/Dockerfile](./docker/Dockerfile).
 
 **How to run? Just `make <id>-tab-completion`** 
 * The docker entrypoint will lead to working directory, `/workspace/megatron-lm/examples/`
-* Each experiment is defined as a [Makefile](./Makefile) target prefixed with a unique id, you can see the target corresponding to a row in the tables. Our intent is to reduce the number of bash scripts, instruction steps/argument, making the runs less friction to reproduce, basically just type make then the id and finally a tab to complete the target. e.g. type `make 101<tab>` turn into `make 101-gpt2xl-dp1-gbs1-bf16`.
+* Each experiment is defined as a [Makefile](./Makefile) target prefixed with a unique id, you can see the make target corresponding to a row in the tables. Our intent is to reduce the number of bash scripts, steps, arguments, making the runs less friction to reproduce, basically just type make then the id and finally a tab to complete the target. e.g. type `make 101<tab>` turn into `make 101-gpt2xl-dp1-gbs1-bf16`.
 * Metrics can be found in std output which is also logged to `./outdir/<experiment label>/logs.txt`. To see GPU memory usage, run `monitor-gpu` on a seperate terminal. Most runs stop after 100 training steps.
 
-**System requirements**: Our results are collected on a single node with 8x H100 80GB SXM5 (NVLink) GPUs. 8xA100 80GB GPUs should give similar trend.
+**System requirements**: Our results are collected on a single node with 8x H100 80GB SXM5 (NVLink) GPUs. 8xA100 80GB GPUs should give similar trend. PCIe GPUs will run, but unproductively slow.
 
 ```
 $ make 
