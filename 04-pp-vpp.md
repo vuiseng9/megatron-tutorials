@@ -49,7 +49,7 @@ As shown in **R7 (VPP=3)**, introducing VPP indeed helps, step time drops from 8
 
 Since TP is often compared against PP, we include a reference run with **TP=8** and **SP enabled**. The performance actually surpasses the best **PP=8, VPP=3, m=8** configuration. Implementation-wise, I feel that **TP+SP** is simpler than **PP/VPP**, fewer moving parts, fewer things to tune.
 
-### R10–R14: Megatron, Transformed! 😎 TP + SP + PP + VPP
+## R10–R15: Megatron, Transformed! 😎 TP + SP + PP + VPP
 
 Would a combination of all parallelism strategies work even better? There are many possible configuration permutations to explore, but here we capture only the best-performing ones to keep the message clear and leave the rest as an exercise.  
 
