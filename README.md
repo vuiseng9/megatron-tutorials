@@ -19,7 +19,7 @@ Explore:
 * [Sequence Parallelism](./02-tp-sp.md#sequence-parallelism): Turns Activation Duplication into Partitions, Bypassing Recomputation.
 * [Context Parallelism](./03-cp.md): Extending Sequence Parallelism to Attention and Variants in Megatron.
 * [(Virtual) Pipeline Parallelism](./04-pp-vpp.md): Inter-layer Model Sharding, Scheduling, and Layer Interleaving for Reduced Bubbles.
-* [In Progress] Expert Parallelism: Mixture of Experts (MoE) for Scaling Model Capacity with Conditional Compute.
+* [[In Progress] Expert Parallelism](./05-ep-moe.md): Mixture-of-Experts (MoE) for Scaling Model Capacity with Conditional Compute.
 
 -----
 ### Setup and Run
