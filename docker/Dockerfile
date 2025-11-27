@@ -29,7 +29,7 @@ RUN git clone $MLM_TUTS mtuts
 
 WORKDIR /workspace
 RUN git clone $MLM_REPO megatron-lm && cd megatron-lm && git checkout $MLM_BRANCH
-RUN cd megatron-lm/examples/gpt3 && cp -r /workspace/mtuts/* .
+RUN cd megatron-lm/examples/gpt3 && cp -r /workspace/mtuts/* . && rm -rf /workspace/mtuts
 
 WORKDIR /workspace/megatron-lm/examples/gpt3
 RUN make install-dependencies && make prepare-ds-openwebtext-10k
