@@ -37,7 +37,7 @@ docker run -d --gpus all -it --rm \
 Or build using [docker/Dockerfile](./docker/Dockerfile).
 
 **How to run? Just `make <id>-tab-completion`** 
-* The docker entrypoint will lead to working directory, `/workspace/megatron-lm/examples/`
+* The docker entrypoint will lead to working directory, `/workspace/megatron-lm/examples/gpt3`
 * Each experiment is defined as a [Makefile](./Makefile) target prefixed with a unique id, you can see the make target corresponding to a row in the tables. Our intent is to reduce the number of bash scripts, steps, arguments, making the runs less friction to reproduce, basically just type make then the id and finally a tab to complete the target. e.g. type `make 101<tab>` turn into `make 101-gpt2xl-dp1-gbs1-bf16`.
 * Metrics can be found in std output which is also logged to `./outdir/<experiment label>/logs.txt`. To see GPU memory usage, run `monitor-gpu` on a seperate terminal. Most runs stop after 100 training steps.
 
