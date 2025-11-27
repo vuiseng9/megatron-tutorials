@@ -1,0 +1,17 @@
+d{
+    "workbench.colorTheme": "Monokai",
+    "terminal.integrated.env.linux": {
+        // "PIP_BREAK_SYSTEM_PACKAGES": "1", // to avoid pip installing packages that break system packages
+        "WS_ROOT": "${workspaceFolder}",         // wr bash function to cd into workspace root
+        "WS_ACTIVE_DIR": "${workspaceFolder}/megatron-lm/examples/gpt3",  // ad  bash function to cd into active dir
+        "WS_ACTIVE_DIR2": "${workspaceFolder}/megatron-lm/examples/llama", // ad2 bash function to cd into active dir2
+        "WS_ACTIVE_DIR3": "${workspaceFolder}/"  // ad3 bash function to cd into active dir3
+    },
+    // pytest configuration
+    "python.testing.cwd": "${workspaceFolder}/path/to/test_folder",
+    // "python.testing.pytestArgs": [] // use this to filter test files
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.analysis.extraPaths": [],
+    "workbench.preferredDarkColorTheme": "Monokai", // add extra paths for pylance, useful for scripts outside of site-packages
+}
