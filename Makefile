@@ -59,8 +59,11 @@ count-arguments:
 128-gpt2xl-dp8-gbs128-zero2:
 	bash ./scripts/100_gpt2xl_ddp_gpuX_gbsX.sh 8 128 1
 
-129-gpt2xl-dp8-gbs168-zero2:
+129-gpt2xl-dp8-zero2-fit-gbs:
 	bash ./scripts/100_gpt2xl_ddp_gpuX_gbsX.sh 8 168 1
+
+130-gpt2xl-dp8-zero2-fit-param:
+	bash scripts/130_gpt2xl+12tx_dp8_zero2_gbs128.sh
 
 # TP Weak Scaling
 211-weak-scale-tp1-gpt2-1.2B-paper:

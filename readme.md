@@ -14,7 +14,7 @@ All experiments are designed to run on a single node with 8×H100 80 GB GPUs. Pe
 
 Explore:
 
-* [Data Parallelism & ZeRO-2](./01-dp-zero2.md): Scaling Up Batch and Model Size with Sublinear Memory Growth.
+* [Data Parallelism & ZeRO-2](./01-dp-zero2.md): Scaling Up Batch and Model Size with Sublinear Memory Growth across Replicas.
 * [Tensor Parallelism](./02-tp-sp.md): Intra-layer Parameter Sharding for Larger Models, per paper's Strong and Weak Scaling.
 * [Sequence Parallelism](./02-tp-sp.md#sequence-parallelism): Turns Activation Duplication into Partitions, Bypassing Recomputation.
 * [Context Parallelism](./03-cp.md): Extending Sequence Parallelism to Attention and Variants in Megatron.
