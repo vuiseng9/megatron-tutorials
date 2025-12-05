@@ -1,0 +1,93 @@
+            (mlp): MLP(
+              (linear_fc1): TELayerNormColumnParallelLinear(in_features=1536, out_features=6144, bias=True, TP=1)
+              (linear_fc2): TERowParallelLinear(in_features=6144, out_features=1536, bias=True, TP=1)
+            )
+
+--disable-bias-linear
+"--num-experts", "8",
+
+            (mlp): MoELayer(
+              (router): TopKRouter()
+              (experts): SequentialMLP(
+                (local_experts): ModuleList(
+                  (0-7): 8 x MLP(
+                    (linear_fc1): TEColumnParallelLinear(in_features=1536, out_features=6144, bias=False, TP=1)
+                    (linear_fc2): TERowParallelLinear(in_features=6144, out_features=1536, bias=False, TP=1)
+                  )
+                )
+              )
+            )
+
+                "--nproc_per_node", "2",
+                "--expert-model-parallel-size", "2",
+                "--micro-batch-size", "8",
+                    "--global-batch-size", "16",
+Each process have only one mlp and it is not 
+            (mlp): MoELayer(
+              (router): TopKRouter()
+              (experts): SequentialMLP(
+                (local_experts): ModuleList(
+                  (0-3): 4 x MLP(
+                    (linear_fc1): TEColumnParallelLinear(in_features=1536, out_features=6144, bias=False, TP=1)
+                    (linear_fc2): TERowParallelLinear(in_features=6144, out_features=1536, bias=False, TP=1)
+                  )
+                )
+              )
+            )
+          )
+
+--moe-router-topk
+[--moe-router-score-function {softmax,sigmoid}]
+
+[--moe-router-load-balancing-type {aux_loss,seq_aux_loss,sinkhorn,none} [{aux_loss,seq_aux_loss,sinkhorn,none} ...]]
+[--moe-grouped-gemm]
+[--moe-layer-recompute]
+
+
+Structural
+[--moe-layer-freq MOE_LAYER_FREQ]
+[--moe-ffn-hidden-size MOE_FFN_HIDDEN_SIZE]
+[--moe-shared-expert-intermediate-size MOE_SHARED_EXPERT_INTERMEDIATE_SIZE]
+[--moe-shared-expert-overlap] 
+  router
+[--moe-router-dtype {fp32,fp64}] 
+[--moe-router-fusion] fuse loss                
+
+experimental
+[--moe-router-force-load-balancing]
+
+deprecated/to be
+[--moe-extended-tp] 
+[--moe-use-legacy-grouped-gemm] 
+skip
+[--moe-use-upcycling] see nvidia paper
+                       
+
+Balancing strategy
+[--moe-router-enable-expert-bias]
+[--moe-token-drop-policy {probs,position}]
+
+
+                       [--moe-router-topk MOE_ROUTER_TOPK]
+                       [--moe-router-pre-softmax]
+                       [--moe-router-num-groups MOE_ROUTER_NUM_GROUPS]
+                       [--moe-router-group-topk MOE_ROUTER_GROUP_TOPK]
+                       [--moe-router-topk-scaling-factor MOE_ROUTER_TOPK_SCALING_FACTOR]
+                       
+                       [--moe-router-bias-update-rate MOE_ROUTER_BIAS_UPDATE_RATE]
+                       
+                       [--moe-router-padding-for-fp8]
+                       [--moe-aux-loss-coeff MOE_AUX_LOSS_COEFF [MOE_AUX_LOSS_COEFF ...]]
+                       [--moe-z-loss-coeff MOE_Z_LOSS_COEFF]
+                       [--moe-input-jitter-eps MOE_INPUT_JITTER_EPS]
+                       [--moe-per-layer-logging]
+                       [--moe-token-dispatcher-type {allgather,alltoall,flex}]
+                       [--moe-enable-deepep]
+                       [--moe-deepep-num-sms MOE_DEEPEP_NUM_SMS]
+                       [--moe-permute-fusion]
+                       [--moe-expert-capacity-factor MOE_EXPERT_CAPACITY_FACTOR]
+                       [--moe-pad-expert-input-to-capacity]
+                       
+                       [--moe-apply-probs-on-input]
+                       [--overlap-moe-expert-parallel-comm]
+                       [--moe-upcycling-granularity MOE_UPCYCLING_GRANULARITY]
