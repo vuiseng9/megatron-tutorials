@@ -8,9 +8,9 @@ How and what should we set?
 Which axis of parallelism should we scale first?
 Why am I getting out-of-memory (OOM) all the time? Okay, it’s finally running… but is it even correct? is the performance as expected?*
 
-This tutorial series is written to address those pain points. It provides a set of curated, ready-to-run (hack) experiments designed to reduce the friction of getting started with Megatron-LM. Each tutorial explains the core concept succinctly, ablates one parallelism strategy at a time, and, wherever possible, we align with the main paper to reproduce the reported empirical scaling trends to verify correctness and understanding.
+This tutorial series is written to address those pain points. It provides a set of curated, ready-to-run (hack) experiments designed to reduce the friction of getting started with Megatron-LM. Each tutorial explains the core concept succinctly, ablates one parallelism strategy at a time. Wherever possible, we align with the main paper to reproduce the reported scaling trends to verify correctness and understanding.
 
-All experiments are designed to run on a single node with 8×H100 80 GB GPUs. Performance and memory metrics are meticulously tabulated for your own cross-reference and verification. The ***goal*** is to *make Megatron-LM more accessible, reproducible, and tinker-friendly*. Let's get started!
+All experiments are designed to run on a single node with 8×H100 80 GB GPUs. Performance and memory metrics are meticulously tabulated for your reference and verification. The ***goal*** is to *make Megatron-LM more accessible, reproducible, and tinker-friendly*. Let's get started!
 
 Explore:
 
@@ -19,7 +19,7 @@ Explore:
 * [Sequence Parallelism](./02-tp-sp.md#sequence-parallelism): Turns Activation Duplication into Partitions, Bypassing Recomputation.
 * [Context Parallelism](./03-cp.md): Extending Sequence Parallelism to Attention and Variants in Megatron.
 * [(Virtual) Pipeline Parallelism](./04-pp-vpp.md): Inter-layer Model Sharding, Scheduling, and Layer Interleaving for Reduced Bubbles.
-* [[In Progress] Expert Parallelism](./05-ep-moe.md): Mixture-of-Experts (MoE) for Scaling Model Capacity with Conditional Compute.
+* [Expert Parallelism](./05-ep-moe.md): Mixture-of-Experts (MoE) for Scaling Model Capacity with Conditional Compute.
 
 -----
 ### Setup and Run
@@ -38,44 +38,49 @@ Or build using [docker/Dockerfile](./docker/Dockerfile).
 
 **How to run? Just `make <id>-tab-completion`** 
 * The docker entrypoint will lead to working directory, `/workspace/megatron-lm/examples/gpt3`
-* Each experiment is defined as a [Makefile](./Makefile) target prefixed with a unique id, you can see the make target corresponding to a row in the tables. Our intent is to reduce the number of bash scripts, steps, arguments, making the runs less friction to reproduce, basically just type make then the id and finally a tab to complete the target. e.g. type `make 101<tab>` turn into `make 101-gpt2xl-dp1-gbs1-bf16`.
-* Metrics can be found in std output which is also logged to `./outdir/<experiment label>/logs.txt`. To see GPU memory usage, run `monitor-gpu` on a seperate terminal. Most runs stop after 100 training steps.
+* Each experiment is defined as a [Makefile](./Makefile) target prefixed with a unique id. Our intent is to reduce the number of bash scripts, steps, arguments, making the runs less friction to reproduce, basically just type make then the id and finally a tab to complete the target. e.g. type `make 101<tab>` turn into `make 101-gpt2xl-dp1-gbs1-bf16`. Each result in our tables also comes their corresponding unique id. 
+* Metrics can be found in std output which is also logged to `./outdir/<experiment label>/logs.txt`. To see GPU memory usage, run `monitor-gpu` on a seperate terminal. Runs are preconfigured to stop after 100 training steps.
 
 **System requirements**: Our results are collected on a single node with 8x H100 80GB SXM5 (NVLink) GPUs. 8xA100 80GB GPUs should give similar trend. PCIe GPUs will run, but unproductively slow.
 
 ```
 $ make 
-101-gpt2xl-dp1-gbs1-bf16                 300-cp1-gpt2-1.2B-gbs8-len4096-ra
-104-gpt2xl-dp4-gbs4                      301-cp1-gpt2-1.2B-gbs8-len4096-oom
-111-gpt2xl-dp1-fit-80GB                  302-cp2-gpt2-1.2B-gbs8-len4096
-112-gpt2xl-dp1-fit-80GB-GA4              304-cp4-gpt2-1.2B-gbs8-len4096
-114-gpt2xl-dp4-fit-4x80GB                308-cp8-gpt2-1.2B-gbs8-len4096
-115-gpt2xl-dp4-gbs60-zero2               318-cp8-gpt2-1.2B-gbs8-len4096-ag
-118-gpt2xl-dp8-fit-8x80GB                328-cp8-gpt2-1.2B-gbs8-len4096-a2a
-121-gpt2xl-dp1-gbs16-oom                 338-cp8-gpt2-1.2B-gbs8-len16k
-122-gpt2xl-dp2-gbs32-zero2               348-cp8-gpt2-1.2B-gbs8-len16k-ag
-124-gpt2xl-dp4-gbs64-zero2               358-cp8-gpt2-1.2B-gbs8-len16k-a2a
-128-gpt2xl-dp8-gbs128-zero2              401-gpt2-8.3B-pp8-m1
-129-gpt2xl-dp8-gbs168-zero2              402-gpt2-8.3B-pp8-m2
-211-weak-scale-tp1-gpt2-1.2B-paper       404-gpt2-8.3B-pp8-m4
-212-weak-scale-tp2-gpt2-2.5B-paper       408-gpt2-8.3B-pp8-m8
-214-weak-scale-tp4-gpt2-4.2B-paper       416-gpt2-8.3B-pp8-m16
-218-weak-scale-tp8-gpt2-8.3B-paper       420-gpt2-8.3B-tpsp8
-221-weak-scale-tp1-gpt2-1.2B-gbs20       424-gpt2-8.3B-tpsp2-pp4-m4
-222-weak-scale-tp2-gpt2-2.5B-gbs20       432-gpt2-8.3B-pp8-m32
-224-weak-scale-tp4-gpt2-4.2B-gbs20       438-gpt2-8.3B-pp8-vpp3-m8
-228-weak-scale-tp8-gpt2-8.3B-gbs20       443-gpt2-8.3B-tpsp2-pp4-vpp3-m4
-231-strong-scale-gpt2-1.2B-tp1-paper     446-gpt2-8.3B-tpsp2-pp4-vpp6-m4
-232-strong-scale-gpt2-1.2B-tp2-paper     449-gpt2-8.3B-tpsp2-pp4-vpp9-m4
-234-strong-scale-gpt2-1.2B-tp4-paper     458-gpt2-8.3B-tpsp2-pp4-vpp18-m4
-238-strong-scale-gpt2-1.2B-tp8-paper     498-gpt2-8.3B-pp8-vpp9-m8
-241-strong-scale-gpt2-1.2B-tp1-gbs20     count-arguments
-242-strong-scale-gpt2-1.2B-tp2-gbs20     how-to-recompute-activation
-244-strong-scale-gpt2-1.2B-tp4-gbs20     install-dependencies
-248-strong-scale-gpt2-1.2B-tp8-gbs20     prepare-ds-openwebtext-10k
-281-gpt-22B-tp8-gbs4-len2048-oom         profile-282-gpt-22B-tp8-gbs4-len2048-sp
-282-gpt-22B-tp8-gbs4-len2048-sp          profile-283-gpt-22B-tp8-gbs4-len2048-ra
-283-gpt-22B-tp8-gbs4-len2048-ra          show-arguments           
+101-gpt2xl-dp1-gbs1-bf16                 318-cp8-gpt2-1.2B-gbs8-len4096-ag
+104-gpt2xl-dp4-gbs4                      328-cp8-gpt2-1.2B-gbs8-len4096-a2a
+111-gpt2xl-dp1-fit-80GB                  338-cp8-gpt2-1.2B-gbs8-len16k
+112-gpt2xl-dp1-fit-80GB-GA4              348-cp8-gpt2-1.2B-gbs8-len16k-ag
+114-gpt2xl-dp4-fit-4x80GB                358-cp8-gpt2-1.2B-gbs8-len16k-a2a
+115-gpt2xl-dp4-gbs60-zero2               401-gpt2-8.3B-pp8-m1
+118-gpt2xl-dp8-fit-8x80GB                402-gpt2-8.3B-pp8-m2
+121-gpt2xl-dp1-gbs16-oom                 404-gpt2-8.3B-pp8-m4
+122-gpt2xl-dp2-gbs32-zero2               408-gpt2-8.3B-pp8-m8
+124-gpt2xl-dp4-gbs64-zero2               416-gpt2-8.3B-pp8-m16
+128-gpt2xl-dp8-gbs128-zero2              420-gpt2-8.3B-tpsp8
+129-gpt2xl-dp8-gbs168-zero2              424-gpt2-8.3B-tpsp2-pp4-m4
+211-weak-scale-tp1-gpt2-1.2B-paper       432-gpt2-8.3B-pp8-m32
+212-weak-scale-tp2-gpt2-2.5B-paper       438-gpt2-8.3B-pp8-vpp3-m8
+214-weak-scale-tp4-gpt2-4.2B-paper       443-gpt2-8.3B-tpsp2-pp4-vpp3-m4
+218-weak-scale-tp8-gpt2-8.3B-paper       446-gpt2-8.3B-tpsp2-pp4-vpp6-m4
+221-weak-scale-tp1-gpt2-1.2B-gbs20       449-gpt2-8.3B-tpsp2-pp4-vpp9-m4
+222-weak-scale-tp2-gpt2-2.5B-gbs20       458-gpt2-8.3B-tpsp2-pp4-vpp18-m4
+224-weak-scale-tp4-gpt2-4.2B-gbs20       498-gpt2-8.3B-pp8-vpp9-m8
+228-weak-scale-tp8-gpt2-8.3B-gbs20       500-olmoe-dp8
+231-strong-scale-gpt2-1.2B-tp1-paper     501-olmoe-dp8-zero2
+232-strong-scale-gpt2-1.2B-tp2-paper     502-olmoe-dp8-zero2-ep8
+234-strong-scale-gpt2-1.2B-tp4-paper     503-olmoe-2xE-dp8-zero2
+238-strong-scale-gpt2-1.2B-tp8-paper     504-olmoe-2xE-dp8-zero2-ep8
+241-strong-scale-gpt2-1.2B-tp1-gbs20     505-olmoe-4xE-dp8-zero2
+242-strong-scale-gpt2-1.2B-tp2-gbs20     506-olmoe-4xE-dp8-zero2-ep8
+244-strong-scale-gpt2-1.2B-tp4-gbs20     511-olmoe-4xE-dp8-zero2-ep4-etp2
+248-strong-scale-gpt2-1.2B-tp8-gbs20     512-olmoe-4xE-dp8-zero2-ep2-etp4
+281-gpt-22B-tp8-gbs4-len2048-oom         count-arguments
+282-gpt-22B-tp8-gbs4-len2048-sp          how-to-recompute-activation
+283-gpt-22B-tp8-gbs4-len2048-ra          install-dependencies
+300-cp1-gpt2-1.2B-gbs8-len4096-ra        prepare-ds-openwebtext-10k
+301-cp1-gpt2-1.2B-gbs8-len4096-oom       profile-282-gpt-22B-tp8-gbs4-len2048-sp
+302-cp2-gpt2-1.2B-gbs8-len4096           profile-283-gpt-22B-tp8-gbs4-len2048-ra
+304-cp4-gpt2-1.2B-gbs8-len4096           show-arguments
+308-cp8-gpt2-1.2B-gbs8-len4096           
 ```
 
 [mlm-gh]: https://github.com/NVIDIA/Megatron-LM

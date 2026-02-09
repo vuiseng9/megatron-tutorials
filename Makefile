@@ -59,11 +59,8 @@ count-arguments:
 128-gpt2xl-dp8-gbs128-zero2:
 	bash ./scripts/100_gpt2xl_ddp_gpuX_gbsX.sh 8 128 1
 
-129-gpt2xl-dp8-zero2-fit-gbs:
+129-gpt2xl-dp8-gbs168-zero2:
 	bash ./scripts/100_gpt2xl_ddp_gpuX_gbsX.sh 8 168 1
-
-130-gpt2xl-dp8-zero2-fit-param:
-	bash scripts/130_gpt2xl+12tx_dp8_zero2_gbs128.sh
 
 # TP Weak Scaling
 211-weak-scale-tp1-gpt2-1.2B-paper:
@@ -165,7 +162,7 @@ profile-283-gpt-22B-tp8-gbs4-len2048-ra:
 358-cp8-gpt2-1.2B-gbs8-len16k-a2a:
 	bash ./scripts/3--_gpt2-1.2B_gbsX_lenX_cpX.sh 8 16384 8 0 a2a
 
-
+# PP/VPP
 401-gpt2-8.3B-pp8-m1:
 	bash ./scripts/4--_ppX_gpt2-8.3B.sh 8 32 32 1
 
@@ -207,3 +204,31 @@ profile-283-gpt-22B-tp8-gbs4-len2048-ra:
 
 458-gpt2-8.3B-tpsp2-pp4-vpp18-m4:
 	bash ./scripts/4--_tpspX_ppXvppX_gpt2-8.3B.sh 2 1 4 18
+
+# EP
+500-olmoe-dp8:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh
+
+501-olmoe-dp8-zero2:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1
+
+502-olmoe-dp8-zero2-ep8:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 8
+
+503-olmoe-2xE-dp8-zero2:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 1 128
+
+504-olmoe-2xE-dp8-zero2-ep8:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 8 128
+
+505-olmoe-4xE-dp8-zero2:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 1 256
+
+506-olmoe-4xE-dp8-zero2-ep8:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 8 256
+
+511-olmoe-4xE-dp8-zero2-ep4-etp2:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 4 256 2
+
+512-olmoe-4xE-dp8-zero2-ep2-etp4:
+	bash ./scripts/5--_zeroX_epX_Xexperts_etpX.sh 1 2 256 4
