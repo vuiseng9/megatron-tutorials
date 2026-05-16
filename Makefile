@@ -2,6 +2,7 @@
 install-dependencies:
 	pip install datasets==3.6.0
 	pip install wandb
+	# pip install transformers # disable as it has been installed
 
 # Not needed if have use prebuilt docker megatron-tuts
 prepare-ds-openwebtext-10k:
