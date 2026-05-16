@@ -3,7 +3,7 @@
     "terminal.integrated.env.linux": {
         // "PIP_BREAK_SYSTEM_PACKAGES": "1", // to avoid pip installing packages that break system packages
         "WS_ROOT": "${workspaceFolder}",         // wr bash function to cd into workspace root
-        "WS_ACTIVE_DIR": "${workspaceFolder}/",  // ad  bash function to cd into active dir
+        "WS_ACTIVE_DIR": "${workspaceFolder}/examples/gpt3/",  // ad  bash function to cd into active dir
         "WS_ACTIVE_DIR2": "${workspaceFolder}/", // ad2 bash function to cd into active dir2
         "WS_ACTIVE_DIR3": "${workspaceFolder}/"  // ad3 bash function to cd into active dir3
     },
