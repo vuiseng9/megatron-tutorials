@@ -35,6 +35,8 @@ docker run -d --gpus all -it --rm \
   vuiseng9/megatron-tutorials
 ```
 Or build using [docker/Dockerfile](./docker/Dockerfile).
+`cd docker && docker build --no-cache -t mtuts-mcore-r0.16 .`
+
 
 **How to run? Just `make <id>-tab-completion`** 
 * The docker entrypoint will lead to working directory, `/workspace/megatron-lm/examples/gpt3`
