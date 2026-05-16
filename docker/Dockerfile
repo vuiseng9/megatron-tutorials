@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/pytorch:25.09-py3
+FROM nvcr.io/nvidia/pytorch:26.03-py3
 SHELL ["/bin/bash", "-lc"]
 USER root
 
@@ -20,12 +20,13 @@ PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\] : \[\033
 EOF
 
 ARG MLM_REPO=https://github.com/NVIDIA/Megatron-LM
-ARG MLM_BRANCH=core_r0.14.0
+ARG MLM_BRANCH=core_r0.16.0
 
 ARG MLM_TUTS=https://github.com/vuiseng9/megatron-tutorials
+ARG MLM_TUTS_BRANCH=mcore-r0.16
 
 WORKDIR /workspace
-RUN git clone $MLM_TUTS mtuts
+RUN git clone $MLM_TUTS mtuts && cd mtuts && git checkout $MLM_TUTS_BRANCH
 
 WORKDIR /workspace
 RUN git clone $MLM_REPO megatron-lm && cd megatron-lm && git checkout $MLM_BRANCH
