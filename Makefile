@@ -20,6 +20,12 @@ prepare-ds-openwebtext-10k:
 		--workers $(shell nproc) \
 		--append-eod
 
+o-makefile:
+	code Makefile
+
+o-pretrain-script:
+	code ../../pretrain_gpt.py
+	
 show-arguments:
 	python ../../pretrain_gpt.py -h | grep -o '^  --[^ ]*' 
 
