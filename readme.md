@@ -35,7 +35,7 @@ docker run -d --gpus all -it --rm \
   vuiseng9/megatron-tutorials
 ```
 Or build using [docker/Dockerfile](./docker/Dockerfile).
-`cd docker && docker build --no-cache -t mtuts-mcore-r0.16 .`
+`cd docker && docker build --no-cache -t mtuts-nvpt2603-mcore-r0.16 .`
 
 
 **How to run? Just `make <id>-tab-completion`** 
